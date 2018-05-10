@@ -169,6 +169,7 @@ void Struct_DataStuff(void){
     temp_val = temp_val & 0x000007FF;           // 11 bits
 	Entangled_Event.LEPD = Entangled_Event.LEPD + temp_val;
     
+    //index 16 bits
     
     //[BUG] index assignment missing
     //test print
