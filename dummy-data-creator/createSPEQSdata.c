@@ -254,11 +254,12 @@ void Struct_Data_Array(struct Expt_Record *Entangled_Event_ptr){
 }
 
 int main(void){
-    int i;
+    int i,j;
     
     Struct_DataStuff();
     
     Struct_Data_Array(&Entangled_Event);
+    FILE *hfp;
     
     
     FILE *fp;
@@ -271,6 +272,13 @@ int main(void){
         printf("%0x ",(int)Rx_Buf[i]);
     }
     printf("\n");
+    hfp = fopen("hexout.txt","w");
+    for (i=0;i<7;i++){
+        for (j=0;j<35;j++){
+            fprintf(hfp,"%02X ", Rx_Buf[j]);
+        }
+        fprintf(hfp,"\n");
+    }
     
     return 0; //compile test
 }
