@@ -19,11 +19,11 @@ def load_data(file):
     global data
     raw_data  = np.fromfile(file, dtype='uint8')
     print("bytes loaded: {0}".format(len(raw_data)))
-    #bin_data = raw_data.reshape(int(raw_data.shape[0]/(248)),248)
-    bin_data = raw_data
+    bin_data = raw_data.reshape(int(raw_data.shape[0]/(248)),248)
+    #bin_data = raw_data
     print("Number of data frames: {0}".format(bin_data.shape[0]) )
     #bin_data = raw_data.reshape(7,38)
-    #bin_data = bin_data[:,1:-2].flatten()
+    bin_data = bin_data[:,0:-3].flatten()
     #bin_data = bin_data[:,1:-2][0] #just checking with one 245 byte frame
     bin_data = bin_data.reshape(int(bin_data.shape[0]/35),35)
     print("Number of event packets: {0}".format(bin_data.shape[0]) )
@@ -232,11 +232,11 @@ def process(infile,outfile):
     df["APD_DAC1"] = APD_DAC1(data)
     df["APD_DAC2"] = APD_DAC2(data)
     T = thermistors_x_5(data)
-    df["T1"] = T[:,0]
-    df["T2"] = T[:,1]
-    df["T3"] = T[:,2]
-    df["T4"] = T[:,3]
-    df["T5"] = T[:,4]
+    df["T1"] = T[:,0].astype(int) *4
+    df["T2"] = T[:,1].astype(int) *4
+    df["T3"] = T[:,2].astype(int) *4
+    df["T4"] = T[:,3].astype(int) *4
+    df["T5"] = T[:,4].astype(int) *4
     df["Laser_DAC"] = Laser_DAC(data)
     df["LCPR_cap_pf"] = LCPR_cap_pf(data)
     df["LCPR_ref_i"] = LCPR_ref_i(data)
@@ -246,13 +246,15 @@ def process(infile,outfile):
     df["LEPD_dX"] = LEPD_dX(data)
     df["LEPD_dY"] = LEPD_dY(data)
     df["index"] = get_index(data)
+    df = df.drop_duplicates()
     df.to_csv(outfile)
     print("output written to:",outfile)
 
 
 # In[132]:
-
-process("out.bin","out_dummy.csv")
+#process("input","output")
+#process("/home/xueliang/git/CSP-Codebase-v2.9.1/S10_1_n","out_101.csv")
+process("S1_1_n","out_1001.csv")
 
 
 # In[125]:
