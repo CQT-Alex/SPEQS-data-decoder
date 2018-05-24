@@ -1,14 +1,14 @@
 
 # coding: utf-8
 
-# In[94]:
+# In[2]:
 
 #all the import statements are here. 
 import numpy as np
 import pandas as pd
 
 
-# In[131]:
+# In[31]:
 
 raw_data = None
 bin_data = None
@@ -23,40 +23,35 @@ def load_data(file):
     #bin_data = raw_data
     print("Number of data frames: {0}".format(bin_data.shape[0]) )
     #bin_data = raw_data.reshape(7,38)
-    bin_data = bin_data[:,0:-3].flatten()
+    bin_data= bin_data[:,0:-3].flatten()
+    #bin_data = bin_data[:,1:-2].flatten()
     #bin_data = bin_data[:,1:-2][0] #just checking with one 245 byte frame
     bin_data = bin_data.reshape(int(bin_data.shape[0]/35),35)
     print("Number of event packets: {0}".format(bin_data.shape[0]) )
-    tdf = pd.DataFrame(bin_data)
-    tdf.to_csv("_byte_data.csv")
-    data = bin_data
+    #tdf = pd.DataFrame(bin_data)
+    #tdf.to_csv("_byte_data.csv")
+    #data = bin_data
+    np.savetxt('_byte_data.csv', bin_data, delimiter=',')   # X is an array
+    #return bin_data
     
-    
-    
-          
+load_data("data/S1_1_n")          
           
     
 
 
-# In[106]:
+# In[4]:
 
 print("test{0}".format(55))
 
 
-# In[51]:
+# In[5]:
+
+##print in hex
+vhex = np.vectorize(hex)
+#vhex(bin_data)
 
 
-
-
-# In[52]:
-
-#print in hex
-##vhex = np.vectorize(hex)
-##vhex(bin_data)
-
-   
-
-# In[53]:
+# In[6]:
 
 #helper function
 def create_word(barr):
@@ -72,17 +67,17 @@ def get_val(h, bitmask, r_shift ):
     return val
 
 
-# In[54]:
+# In[7]:
 
 #w = create_word(bin_data[1,0:3])
 
 
-# In[55]:
+# In[8]:
 
-##vhex(get_val(w,0xFFFFF,0) )
+#vhex(get_val(w,0xFFFFF,0) )
 
 
-# In[56]:
+# In[9]:
 
 def extract_column(data, begin_byte, end_byte,pattern, right_shift):
     warr = map(create_word,data[:,begin_byte:end_byte])
@@ -91,56 +86,56 @@ def extract_column(data, begin_byte, end_byte,pattern, right_shift):
     return r
 
 
-# In[57]:
+# In[10]:
 
 def APD1Top(data):
     return extract_column(data,0,3,0xFFFFF,0)
 #vhex(APD1Top(bin_data))
 
 
-# In[58]:
+# In[11]:
 
 def APD2Top(data):
     return extract_column(data,2,5,0xFFFFF0,4)
 #vhex(APD2Top(bin_data))
 
 
-# In[59]:
+# In[12]:
 
 def APD1Bot(data):
     return extract_column(data,5,8,0xFFFFF,0)
 #vhex(APD1Bot(bin_data))
 
 
-# In[60]:
+# In[13]:
 
 def APD2Bot(data):
     return extract_column(data,7,10,0xFFFFF0,4)
 #vhex(APD2Bot(bin_data))
 
 
-# In[61]:
+# In[14]:
 
 def coinc(data):
     return extract_column(data,10,13,0xFFFF,0)
 #vhex(coinc(bin_data))
 
 
-# In[62]:
+# In[15]:
 
 def APD_DAC1(data):
     return extract_column(data,12,15,0xFFF,0)
 #vhex(APD_DAC1(bin_data))
 
 
-# In[63]:
+# In[16]:
 
 def APD_DAC2(data):
     return extract_column(data,12,15,0xFFF000,12)
 #vhex(APD_DAC2(bin_data))
 
 
-# In[64]:
+# In[17]:
 
 def thermistors_x_5(data):
     return data[:,16:21]
@@ -148,81 +143,86 @@ def thermistors_x_5(data):
 #vhex(thermistors_x_5(bin_data) )
 
 
-# In[65]:
+# In[18]:
 
 def Laser_DAC(data):
     return extract_column(data,21,23,0xFFF,0)
 #vhex(Laser_DAC(bin_data))
 
 
-# In[66]:
+# In[19]:
 
 def LCPR_cap_pf(data):
     return extract_column(data,23,25,(0xFFF<<2),2)
 #vhex(LCPR_cap_pf(bin_data))
 
 
-# In[67]:
+# In[20]:
 
 def LCPR_ref_i(data):
     return extract_column(data,23,25,0x3,0)
-#vhex(LCPR_ref_i(bin_data))
+##vhex(LCPR_ref_i(bin_data))
 
 
-# In[68]:
+# In[21]:
 
 def LCPR_1(data):
     return extract_column(data,25,27,0xFFFF,0)
 #vhex(LCPR_1(bin_data))
 
 
-# In[69]:
+# In[22]:
 
 def LCPR_2(data):
     return extract_column(data,27,29,0xFFFF,0)
 #vhex(LCPR_2(bin_data))
 
 
-# In[70]:
+# In[23]:
 
 def LEPD_total(data):
     return extract_column(data,29,33,(0x3FF<<22),22)
 #vhex(LEPD_total(bin_data))
 
 
-# In[71]:
+# In[24]:
 
 def LEPD_dX(data):
     return extract_column(data,29,33,(0x7FF<<11),11)
 #vhex(LEPD_dX(bin_data))
 
 
-# In[72]:
+# In[25]:
 
 def LEPD_dY(data):
     return extract_column(data,29,33,(0x7FF),0)
 #vhex(LEPD_dY(bin_data))
 
 
-# In[73]:
+# In[26]:
 
 def get_index(data):
     return extract_column(data,33,35,(0xFFFF),0)
 #vhex(get_index(bin_data))
 
 
-# In[116]:
+# In[98]:
 
 def process(infile,outfile):
     print("loading:",infile)
-    load_data(infile)
+    #bin_data = load_data(infile)
     COLUMN_NAMES = ["APDTop1","APDTop2","APDBot1","APDBot2",
                 "Coincidence","APD_DAC1","APD_DAC2","T1",
                 "T2","T3","T4","T5","Laser_DAC","LCPR_cap_pf",
                 "LCPR_ref_i","LCPR_1","LCPR_2","LEPD_total",
-                "LEPD_dX","LEPD_dY","index"]
+                "LEPD_dX","LEPD_dY","Index"]
     df = pd.DataFrame(columns=COLUMN_NAMES)
-    data = bin_data
+    
+    ind_list = get_index(bin_data)
+    heater_begin = 14
+    heater_end = ind_list[heater_begin:].index(0) + heater_begin
+    
+    data = bin_data[heater_end:]
     
     df["APDTop1"] = APD1Top(data)
     df["APDTop2"] = APD2Top(data)
@@ -245,21 +245,40 @@ def process(infile,outfile):
     df["LEPD_total"] = LEPD_total(data)
     df["LEPD_dX"] = LEPD_dX(data)
     df["LEPD_dY"] = LEPD_dY(data)
-    df["index"] = get_index(data)
-    df = df.drop_duplicates()
+    df["Index"] = get_index(data)
+    df = df.drop_duplicates() # 
+    df = df[df.Index !=65535  ]
+    
     df.to_csv(outfile)
     print("output written to:",outfile)
 
 
-# In[132]:
-#process("input","output")
-#process("/home/xueliang/git/CSP-Codebase-v2.9.1/S10_1_n","out_101.csv")
-process("S1_1_n","out_1001.csv")
+# In[99]:
+
+process("data/heater-test/S12_1_n","out_S12.csv")
+#process("out.bin","out_dummy.csv")
 
 
-# In[125]:
+# In[100]:
 
-##vhex(df[29:41])
+def get_heating_data(infile, outfile): #("data/heater-test/S12_1_n","out_S12.csv")
+    global bin_data
+    #df = pd.DataFrame(columns=COLUMN_NAMES)
+    data = bin_data
+    ind_list = get_index(data)
+    heater_begin = 14
+    heater_end = ind_list[heater_begin:].index(0) + heater_begin
+    
+    hdata = data[heater_begin:heater_end].astype(dtype='uint16') *4
+    
+    np.savetxt(outfile, hdata, delimiter=",")
+    #print(hdata)
+    
+    #print (heater_begin,heater_end)
+    #print( ind_list [heater_end])
+    #print (ind_list)
+    
+get_heating_data("data/heater-test/S12_1_n","heat_S12.csv")
 
 
 # In[ ]:
