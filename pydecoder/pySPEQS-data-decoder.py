@@ -39,11 +39,6 @@ def load_data(file):
     
 
 
-# In[3]:
-
-print("test{0}".format(55))
-
-
 # In[4]:
 
 ##print in hex
@@ -258,6 +253,7 @@ def process(infile,outfile):
 
 def get_heating_data(infile, outfile): #("data/heater-test/S12_1_n","out_S12.csv")
     global bin_data
+    load_data(infile)
     #df = pd.DataFrame(columns=COLUMN_NAMES)
     data = bin_data
     ind_list = get_index(data)
