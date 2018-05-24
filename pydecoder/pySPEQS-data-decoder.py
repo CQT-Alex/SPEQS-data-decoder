@@ -10,13 +10,13 @@ import pandas as pd
 
 # In[2]:
 
-raw_data = None
-bin_data = None
-data = None
+#raw_data = None
+#bin_data = None
+#data = None
 def load_data(file):
-    global raw_data
-    global bin_data
-    global data
+    #global raw_data
+    #global bin_data
+    #global data
     raw_data  = np.fromfile(file, dtype='uint8')
     print("bytes loaded: {0}".format(len(raw_data)))
     bin_data = raw_data.reshape(int(raw_data.shape[0]/(248)),248)
@@ -33,20 +33,20 @@ def load_data(file):
     #data = bin_data
     np.savetxt('_byte_data.csv', bin_data, delimiter=',')   # X is an array
     #return bin_data
-    
+    return bin_data
 #load_data("data/S1_1_n")          
           
     
 
 
-# In[4]:
+# In[3]:
 
 ##print in hex
 vhex = np.vectorize(hex)
 #vhex(bin_data)
 
 
-# In[5]:
+# In[4]:
 
 #helper function
 def create_word(barr):
@@ -62,17 +62,17 @@ def get_val(h, bitmask, r_shift ):
     return val
 
 
-# In[6]:
+# In[5]:
 
 #w = create_word(bin_data[1,0:3])
 
 
-# In[7]:
+# In[6]:
 
 #vhex(get_val(w,0xFFFFF,0) )
 
 
-# In[8]:
+# In[7]:
 
 def extract_column(data, begin_byte, end_byte,pattern, right_shift):
     warr = map(create_word,data[:,begin_byte:end_byte])
@@ -81,56 +81,56 @@ def extract_column(data, begin_byte, end_byte,pattern, right_shift):
     return r
 
 
-# In[9]:
+# In[8]:
 
 def APD1Top(data):
     return extract_column(data,0,3,0xFFFFF,0)
 #vhex(APD1Top(bin_data))
 
 
-# In[10]:
+# In[9]:
 
 def APD2Top(data):
     return extract_column(data,2,5,0xFFFFF0,4)
 #vhex(APD2Top(bin_data))
 
 
-# In[11]:
+# In[10]:
 
 def APD1Bot(data):
     return extract_column(data,5,8,0xFFFFF,0)
 #vhex(APD1Bot(bin_data))
 
 
-# In[12]:
+# In[11]:
 
 def APD2Bot(data):
     return extract_column(data,7,10,0xFFFFF0,4)
 #vhex(APD2Bot(bin_data))
 
 
-# In[13]:
+# In[12]:
 
 def coinc(data):
     return extract_column(data,10,13,0xFFFF,0)
 #vhex(coinc(bin_data))
 
 
-# In[14]:
+# In[13]:
 
 def APD_DAC1(data):
     return extract_column(data,12,15,0xFFF,0)
 #vhex(APD_DAC1(bin_data))
 
 
-# In[15]:
+# In[14]:
 
 def APD_DAC2(data):
     return extract_column(data,12,15,0xFFF000,12)
 #vhex(APD_DAC2(bin_data))
 
 
-# In[16]:
+# In[15]:
 
 def thermistors_x_5(data):
     return data[:,16:21]
@@ -138,75 +138,74 @@ def thermistors_x_5(data):
 #vhex(thermistors_x_5(bin_data) )
 
 
-# In[17]:
+# In[16]:
 
 def Laser_DAC(data):
     return extract_column(data,21,23,0xFFF,0)
 #vhex(Laser_DAC(bin_data))
 
 
-# In[18]:
+# In[17]:
 
 def LCPR_cap_pf(data):
     return extract_column(data,23,25,(0xFFF<<2),2)
 #vhex(LCPR_cap_pf(bin_data))
 
 
-# In[19]:
+# In[18]:
 
 def LCPR_ref_i(data):
     return extract_column(data,23,25,0x3,0)
 ##vhex(LCPR_ref_i(bin_data))
 
 
-# In[20]:
+# In[19]:
 
 def LCPR_1(data):
     return extract_column(data,25,27,0xFFFF,0)
 #vhex(LCPR_1(bin_data))
 
 
-# In[21]:
+# In[20]:
 
 def LCPR_2(data):
     return extract_column(data,27,29,0xFFFF,0)
 #vhex(LCPR_2(bin_data))
 
 
-# In[22]:
+# In[21]:
 
 def LEPD_total(data):
     return extract_column(data,29,33,(0x3FF<<22),22)
 #vhex(LEPD_total(bin_data))
 
 
-# In[23]:
+# In[22]:
 
 def LEPD_dX(data):
     return extract_column(data,29,33,(0x7FF<<11),11)
 #vhex(LEPD_dX(bin_data))
 
 
-# In[24]:
+# In[23]:
 
 def LEPD_dY(data):
     return extract_column(data,29,33,(0x7FF),0)
 #vhex(LEPD_dY(bin_data))
 
 
-# In[25]:
+# In[24]:
 
 def get_index(data):
     return extract_column(data,33,35,(0xFFFF),0)
 #vhex(get_index(bin_data))
 
 
-# In[26]:
+# In[25]:
 
 def process(infile,outfile):
     print("loading:",infile)
-    #bin_data = 
-    load_data(infile)
+    bin_data =  load_data(infile)
     COLUMN_NAMES = ["APDTop1","APDTop2","APDBot1","APDBot2",
                 "Coincidence","APD_DAC1","APD_DAC2","T1",
                 "T2","T3","T4","T5","Laser_DAC","LCPR_cap_pf",
@@ -249,11 +248,10 @@ def process(infile,outfile):
     print("output written to:",outfile)
 
 
-# In[27]:
+# In[26]:
 
 def get_heating_data(infile, outfile): #("data/heater-test/S12_1_n","out_S12.csv")
-    global bin_data
-    load_data(infile)
+    bin_data = load_data(infile)
     #df = pd.DataFrame(columns=COLUMN_NAMES)
     data = bin_data
     ind_list = get_index(data)
@@ -271,7 +269,7 @@ def get_heating_data(infile, outfile): #("data/heater-test/S12_1_n","out_S12.csv
     
 
 
-# In[28]:
+# In[27]:
 
 process("data/heater-test/S12_1_n","out_S12.csv")
 #process("out.bin","out_dummy.csv")
