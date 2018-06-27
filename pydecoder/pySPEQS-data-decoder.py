@@ -1,14 +1,15 @@
 
 # coding: utf-8
 
-# In[1]:
+# In[63]:
 
 #all the import statements are here. 
 import numpy as np
 import pandas as pd
+import json
 
 
-# In[2]:
+# In[64]:
 
 #raw_data = None
 #bin_data = None
@@ -35,18 +36,18 @@ def load_data(file):
     #return bin_data
     return bin_data
 #load_data("data/S1_1_n")          
-          
+#S1_1_n          
     
 
 
-# In[3]:
+# In[65]:
 
 ##print in hex
 vhex = np.vectorize(hex)
 #vhex(bin_data)
 
 
-# In[4]:
+# In[66]:
 
 #helper function
 def create_word(barr):
@@ -62,17 +63,17 @@ def get_val(h, bitmask, r_shift ):
     return val
 
 
-# In[5]:
+# In[67]:
 
 #w = create_word(bin_data[1,0:3])
 
 
-# In[6]:
+# In[68]:
 
 #vhex(get_val(w,0xFFFFF,0) )
 
 
-# In[7]:
+# In[69]:
 
 def extract_column(data, begin_byte, end_byte,pattern, right_shift):
     warr = map(create_word,data[:,begin_byte:end_byte])
@@ -81,56 +82,61 @@ def extract_column(data, begin_byte, end_byte,pattern, right_shift):
     return r
 
 
-# In[8]:
+# In[70]:
+
+#def exp_code(hdata):
+
+
+# In[71]:
 
 def APD1Top(data):
     return extract_column(data,0,3,0xFFFFF,0)
 #vhex(APD1Top(bin_data))
 
 
-# In[9]:
+# In[72]:
 
 def APD2Top(data):
     return extract_column(data,2,5,0xFFFFF0,4)
 #vhex(APD2Top(bin_data))
 
 
-# In[10]:
+# In[73]:
 
 def APD1Bot(data):
     return extract_column(data,5,8,0xFFFFF,0)
 #vhex(APD1Bot(bin_data))
 
 
-# In[11]:
+# In[74]:
 
 def APD2Bot(data):
     return extract_column(data,7,10,0xFFFFF0,4)
 #vhex(APD2Bot(bin_data))
 
 
-# In[12]:
+# In[75]:
 
 def coinc(data):
     return extract_column(data,10,13,0xFFFF,0)
 #vhex(coinc(bin_data))
 
 
-# In[13]:
+# In[76]:
 
 def APD_DAC1(data):
     return extract_column(data,12,15,0xFFF,0)
 #vhex(APD_DAC1(bin_data))
 
 
-# In[14]:
+# In[77]:
 
 def APD_DAC2(data):
     return extract_column(data,12,15,0xFFF000,12)
 #vhex(APD_DAC2(bin_data))
 
 
-# In[15]:
+# In[78]:
 
 def thermistors_x_5(data):
     return data[:,16:21]
@@ -138,70 +144,70 @@ def thermistors_x_5(data):
 #vhex(thermistors_x_5(bin_data) )
 
 
-# In[16]:
+# In[79]:
 
 def Laser_DAC(data):
     return extract_column(data,21,23,0xFFF,0)
 #vhex(Laser_DAC(bin_data))
 
 
-# In[17]:
+# In[80]:
 
 def LCPR_cap_pf(data):
     return extract_column(data,23,25,(0xFFF<<2),2)
 #vhex(LCPR_cap_pf(bin_data))
 
 
-# In[18]:
+# In[81]:
 
 def LCPR_ref_i(data):
     return extract_column(data,23,25,0x3,0)
 ##vhex(LCPR_ref_i(bin_data))
 
 
-# In[19]:
+# In[82]:
 
 def LCPR_1(data):
     return extract_column(data,25,27,0xFFFF,0)
 #vhex(LCPR_1(bin_data))
 
 
-# In[20]:
+# In[83]:
 
 def LCPR_2(data):
     return extract_column(data,27,29,0xFFFF,0)
 #vhex(LCPR_2(bin_data))
 
 
-# In[21]:
+# In[84]:
 
 def LEPD_total(data):
     return extract_column(data,29,33,(0x3FF<<22),22)
 #vhex(LEPD_total(bin_data))
 
 
-# In[22]:
+# In[85]:
 
 def LEPD_dX(data):
     return extract_column(data,29,33,(0x7FF<<11),11)
 #vhex(LEPD_dX(bin_data))
 
 
-# In[23]:
+# In[86]:
 
 def LEPD_dY(data):
     return extract_column(data,29,33,(0x7FF),0)
 #vhex(LEPD_dY(bin_data))
 
 
-# In[24]:
+# In[87]:
 
 def get_index(data):
     return extract_column(data,33,35,(0xFFFF),0)
 #vhex(get_index(bin_data))
 
 
-# In[25]:
+# In[88]:
 
 def process(infile,outfile):
     print("loading:",infile)
@@ -248,7 +254,7 @@ def process(infile,outfile):
     print("output written to:",outfile)
 
 
-# In[26]:
+# In[89]:
 
 def get_heating_data(infile, outfile): #("data/heater-test/S12_1_n","out_S12.csv")
     bin_data = load_data(infile)
@@ -269,9 +275,73 @@ def get_heating_data(infile, outfile): #("data/heater-test/S12_1_n","out_S12.csv
     
 
 
-# In[27]:
+# In[111]:
 
-process("data/heater-test/S12_1_n","out_S12.csv")
+def decode_profile_data(p):
+    d = {}
+    
+    d['obc_exp_code'] = p[1]
+    d['e_heat_high'] = p[2]
+    
+    d['heatHigh_timeout'] = create_word(p[4:2:-1])
+    d['TEMP_SetPt'] = create_word(p[6:4:-1])
+    d['DarkCountMode_TimeOut'] = create_word(p[8:6:-1])
+    d['LCPR_cap_ref_index'] = p[9]
+    d['LD_Cons_Current_Mode'] = create_word(p[11:9:-1])
+    d['Experiment_Time']  = create_word(p[13:11:-1])
+    d['QRNG_mode'] = p[14]  # implement check for qrng mdode vs. qrng profile
+    
+    
+    
+    
+    d['LCPR_cap_ref_index'] = p[31]  #  repeat? 
+    d['LCPR_step_size'] = p[32]
+    d['Count_send_interval'] = p[33]
+    d['OPAMP1_DC_Offset'] = create_word(p[35:33:-1])
+    d['OPAMP2_DC_Offset'] = create_word(p[37:35:-1])
+    
+    for key in d :
+        d[key] = int(d[key])
+    
+    
+    
+    d['LCPR_1_Buf'] = [0,0,0,0]
+    d['LCPR_2_Buf'] = [0,0,0,0]
+    
+    for i in range(0,4):
+        d['LCPR_1_Buf'][i] = int(create_word(p[(16+2*i):(14+2*i):-1]))
+        d['LCPR_2_Buf'][i] = int(create_word(p[(8+16+2*i):(8+14+2*i):-1]))
+    
+    return d
+    
+    
+
+
+# In[112]:
+
+def get_profile_data(infile,outfile):
+    profile_dd = {} #profile data dictionary
+    bin_data = load_data(infile)
+    #df = pd.DataFrame(columns=COLUMN_NAMES)
+    pp = np.append(bin_data[0,:],bin_data[1,0:3]) #previous profile
+    #print (pp)
+    dpp = decode_profile_data(pp)
+    #print (dpp)
+    profile_dd["previous_profile"] = dpp
+    cp = np.append(bin_data[7,:],bin_data[8,0:3]) #current profile
+    dcp = decode_profile_data(cp)
+    #print (dcp)
+    profile_dd["current_profile"] = dcp
+    with open(outfile,"w") as fp:
+        json.dump(profile_dd, fp,indent=4, sort_keys=True)
+
+    
+get_profile_data("data/S4_1_n","prof_s41.json")
+
+
+# In[ ]:
+
+process("data/S4_1_n","out_S41.csv")
 #process("out.bin","out_dummy.csv")
-get_heating_data("data/heater-test/S12_1_n","heat_S12.csv")
+get_heating_data("data/S4_1_n","heat_S41.csv")
 

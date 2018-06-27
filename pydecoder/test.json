@@ -1,0 +1,27 @@
+{
+    "Count_send_interval": 24,
+    "DarkCountMode_TimeOut": 1,
+    "Experiment_Time": 60,
+    "LCPR_1_Buf": [
+        187,
+        235,
+        262,
+        300
+    ],
+    "LCPR_2_Buf": [
+        201,
+        230,
+        267,
+        315
+    ],
+    "LCPR_cap_ref_index": 0,
+    "LCPR_step_size": 5,
+    "LD_Cons_Current_Mode": 311,
+    "OPAMP1_DC_Offset": 3000,
+    "OPAMP2_DC_Offset": 3000,
+    "QRNG_mode": 0,
+    "TEMP_SetPt": 800,
+    "e_heat_high": 1,
+    "heatHigh_timeout": 1,
+    "obc_exp_code": 1
+}
