@@ -1,6 +1,6 @@
 {
     "current_profile": {
-        "Count_send_interval": 24,
+        "Count_send_interval": 5,
         "DarkCountMode_TimeOut": 1,
         "Experiment_Time": 60,
         "LCPR_1_Buf": [
@@ -16,10 +16,10 @@
             315
         ],
         "LCPR_cap_ref_index": 0,
-        "LCPR_step_size": 5,
+        "LCPR_step_size": 0,
         "LD_Cons_Current_Mode": 311,
-        "OPAMP1_DC_Offset": 3000,
-        "OPAMP2_DC_Offset": 3000,
+        "OPAMP1_DC_Offset": 6155,
+        "OPAMP2_DC_Offset": 47115,
         "QRNG_mode": 0,
         "TEMP_SetPt": 800,
         "e_heat_high": 1,
@@ -27,7 +27,7 @@
         "obc_exp_code": 1
     },
     "previous_profile": {
-        "Count_send_interval": 24,
+        "Count_send_interval": 5,
         "DarkCountMode_TimeOut": 60,
         "Experiment_Time": 610,
         "LCPR_1_Buf": [
@@ -43,10 +43,10 @@
             315
         ],
         "LCPR_cap_ref_index": 0,
-        "LCPR_step_size": 5,
+        "LCPR_step_size": 0,
         "LD_Cons_Current_Mode": 311,
-        "OPAMP1_DC_Offset": 3000,
-        "OPAMP2_DC_Offset": 3000,
+        "OPAMP1_DC_Offset": 6155,
+        "OPAMP2_DC_Offset": 47115,
         "QRNG_mode": 0,
         "TEMP_SetPt": 800,
         "e_heat_high": 1,

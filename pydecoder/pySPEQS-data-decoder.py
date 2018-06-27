@@ -275,7 +275,7 @@ def get_heating_data(infile, outfile): #("data/heater-test/S12_1_n","out_S12.csv
     
 
 
-# In[111]:
+# In[113]:
 
 def decode_profile_data(p):
     d = {}
@@ -292,17 +292,16 @@ def decode_profile_data(p):
     d['QRNG_mode'] = p[14]  # implement check for qrng mdode vs. qrng profile
     
     
+        
     
-    
-    d['LCPR_cap_ref_index'] = p[31]  #  repeat? 
-    d['LCPR_step_size'] = p[32]
-    d['Count_send_interval'] = p[33]
-    d['OPAMP1_DC_Offset'] = create_word(p[35:33:-1])
-    d['OPAMP2_DC_Offset'] = create_word(p[37:35:-1])
+    #d['LCPR_cap_ref_index'] = p[31]  #  repeat? 
+    d['LCPR_step_size'] = p[31]
+    d['Count_send_interval'] = p[32]
+    d['OPAMP1_DC_Offset'] = create_word(p[34:32:-1])
+    d['OPAMP2_DC_Offset'] = create_word(p[36:34:-1])
     
     for key in d :
         d[key] = int(d[key])
-    
     
     
     d['LCPR_1_Buf'] = [0,0,0,0]
@@ -312,12 +311,14 @@ def decode_profile_data(p):
         d['LCPR_1_Buf'][i] = int(create_word(p[(16+2*i):(14+2*i):-1]))
         d['LCPR_2_Buf'][i] = int(create_word(p[(8+16+2*i):(8+14+2*i):-1]))
     
+
+    
     return d
     
     
 
 
-# In[112]:
+# In[114]:
 
 def get_profile_data(infile,outfile):
     profile_dd = {} #profile data dictionary
@@ -339,9 +340,14 @@ def get_profile_data(infile,outfile):
 get_profile_data("data/S4_1_n","prof_s41.json")
 
 
-# In[ ]:
+# In[115]:
 
 process("data/S4_1_n","out_S41.csv")
 #process("out.bin","out_dummy.csv")
 get_heating_data("data/S4_1_n","heat_S41.csv")
+
+
+# In[ ]:
+
+
 
