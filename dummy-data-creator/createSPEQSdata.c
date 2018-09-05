@@ -13,9 +13,13 @@
 #include <stdio.h>
 #include <stdint.h>
 
+/*
 #define uint32_t uint32_t
 #define uint16_t uint16_t
 #define uint8_t uint8_t
+*/
+#define NUM_LEPD_CURRENTS 4
+#define EVENT_FRAME_SIZE 36
 
 uint32_t count32_APDTop1Counter;
 uint32_t count32_APDTop2Counter;
@@ -75,7 +79,7 @@ uint32_t Random_Buffer[10];
 
 uint8_t Min_Entropy;
 
-
+uint16_t I[4];
 // define a 35 byte structure to be compatible with the Flash memory
 struct Expt_Record{
 uint32_t APD_Counts[3];   // includes 20bit singles (x4) + 16bit coincidences
@@ -83,19 +87,20 @@ uint32_t APD_DACs;        // includes (x2) 12bit APD DAC settings
 uint8_t Thermistors[5];  // includes 9bit thermistor readings (x5)
 uint16_t Laser_DAC;
 uint16_t LCPR[3];
-uint32_t LEPD;
+uint8_t LEPD[5];
 uint16_t index;
 };
 
 struct Expt_Record Entangled_Event;
 
-uint8_t Expt_record_byte_form[35] = {0};          // This contains 1s data bytes (35) from a single event
-uint8_t Rx_Buf[35];
+uint8_t Expt_record_byte_form[36] = {0};          // This contains 1s data bytes (35) from a single event
+uint8_t Rx_Buf[EVENT_FRAME_SIZE];
 
 void Struct_DataStuff(void){
 
 	uint32_t temp_val;
     uint16_t temp_val1;
+    uint8_t temp_val8;
     uint8_t index = 0;
     
 	count32_APDTop1Counter = 0x12345;
@@ -112,9 +117,13 @@ void Struct_DataStuff(void){
 	uk_LCPR_1 = 0x1234;
 	uk_LCPR_2 = 0xABCD;
 	
-	LEPD_Total = 0x245; //10 bits
-	dX = 0x723;//11 bits
-	dY = 0x612; //11bits	
+    I[0] = 0xFF; //255
+    I[1] = 0xEE; //238
+    I[2] = 0xDD; //221
+    I[3] = 0xCC; //204
+	//LEPD_Total = 0x245; //10 bits
+	//dX = 0x723;//11 bits
+	//dY = 0x612; //11bits	
 	LCPR_cap_ref_index = 0x2;
 	Entangled_Event.APD_Counts[0] = Entangled_Event.APD_Counts[0] | (count32_APDTop1Counter & 0x000FFFFF);    // 20bits APD1 top singles
     
@@ -157,7 +166,8 @@ void Struct_DataStuff(void){
     Entangled_Event.LCPR[1] = uk_LCPR_1;
     Entangled_Event.LCPR[2] = uk_LCPR_2;
 	
-	temp_val = LEPD_Total & 0x000003FF;	        // 10 bits
+	/*
+    temp_val = LEPD_Total & 0x000003FF;	        // 10 bits
 	temp_val = (temp_val << 22) & 0xFFC00000;
     Entangled_Event.LEPD = temp_val;
 	
@@ -168,7 +178,21 @@ void Struct_DataStuff(void){
     temp_val = dY;
     temp_val = temp_val & 0x000007FF;           // 11 bits
 	Entangled_Event.LEPD = Entangled_Event.LEPD + temp_val;
-    
+    */
+
+    for (index = 0 ; index < NUM_LEPD_CURRENTS ; index++){
+        // First save the most significant 8 bits
+        Entangled_Event.LEPD[index] = 0;
+
+      
+        Entangled_Event.LEPD[index] = (uint8_t)((I[index] >> 2) & 0x000000FF);       
+        
+        // Next save the least significant 2 bits from each current value in the last byte of the array
+        temp_val8 = 0;
+        temp_val8 = (uint8_t)(I[index] & 0x00000003);
+        Entangled_Event.LEPD[NUM_LEPD_CURRENTS] = Entangled_Event.LEPD[NUM_LEPD_CURRENTS] + ((uint8_t)(temp_val8 << (2*index)));       
+    } 
+
     //index 16 bits
     
     //[BUG] index assignment missing
@@ -233,23 +257,23 @@ void Struct_Data_Array(struct Expt_Record *Entangled_Event_ptr){
         Rx_Buf[24+2*i] = (uint8_t) temp1;  // LSB
     }
         
-        temp = Entangled_Event_ptr->LEPD;
-        Rx_Buf[29] = (uint8_t) temp;
+        Rx_Buf[29] = Entangled_Event_ptr->LEPD[0];
+               
+        Rx_Buf[30] = Entangled_Event_ptr->LEPD[1];
+                
+        Rx_Buf[31] = Entangled_Event_ptr->LEPD[2];
+                
+        Rx_Buf[32] = Entangled_Event_ptr->LEPD[3];
+                
+        Rx_Buf[33] = Entangled_Event_ptr->LEPD[4];
         
-        temp = Entangled_Event_ptr->LEPD;
-        Rx_Buf[30] = (uint8_t) (temp >> 8);
         
-        temp = Entangled_Event_ptr->LEPD;
-        Rx_Buf[31] = (uint8_t) (temp >> 16);
-        
-        temp = Entangled_Event_ptr->LEPD;
-        Rx_Buf[32] = (uint8_t) (temp >> 24);
-        
+
         temp1 = Entangled_Event_ptr->index;
-        Rx_Buf[33] = (uint8_t) temp1;
+        Rx_Buf[34] = (uint8_t) temp1;
         
         temp1 = Entangled_Event_ptr->index>>8;
-        Rx_Buf[34] = (uint8_t) temp1;
+        Rx_Buf[35] = (uint8_t) temp1;
         
 }
 
@@ -265,16 +289,16 @@ int main(void){
     FILE *fp;
     fp = fopen("out.bin","wb");
     for (i = 0; i< 7;i++){
-        fwrite(Rx_Buf,sizeof(uint8_t),35,fp);
+        fwrite(Rx_Buf,sizeof(uint8_t),EVENT_FRAME_SIZE,fp);
     }
     fclose(fp);
-    for (i=0;i<35;i++){
+    for (i=0;i<EVENT_FRAME_SIZE;i++){
         printf("%0x ",(int)Rx_Buf[i]);
     }
     printf("\n");
     hfp = fopen("hexout.txt","w");
     for (i=0;i<7;i++){
-        for (j=0;j<35;j++){
+        for (j=0;j<EVENT_FRAME_SIZE;j++){
             fprintf(hfp,"%02X ", Rx_Buf[j]);
         }
         fprintf(hfp,"\n");
