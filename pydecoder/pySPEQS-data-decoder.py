@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[63]:
+# In[1]:
 
 #all the import statements are here. 
 import numpy as np
@@ -9,7 +9,7 @@ import pandas as pd
 import json
 
 
-# In[64]:
+# In[2]:
 
 #raw_data = None
 #bin_data = None
@@ -20,14 +20,14 @@ def load_data(file):
     #global data
     raw_data  = np.fromfile(file, dtype='uint8')
     print("bytes loaded: {0}".format(len(raw_data)))
-    bin_data = raw_data.reshape(int(raw_data.shape[0]/(248)),248)
+    bin_data = raw_data.reshape(int(raw_data.shape[0]/(255)),255)
     #bin_data = raw_data
     print("Number of data frames: {0}".format(bin_data.shape[0]) )
     #bin_data = raw_data.reshape(7,38)
-    bin_data= bin_data[:,0:-3].flatten()
-    #bin_data = bin_data[:,1:-2].flatten()
+    #bin_data= bin_data[:,0:-3].flatten()
+    bin_data = bin_data[:,1:-2].flatten()
     #bin_data = bin_data[:,1:-2][0] #just checking with one 245 byte frame
-    bin_data = bin_data.reshape(int(bin_data.shape[0]/35),35)
+    bin_data = bin_data.reshape(int(bin_data.shape[0]/36),36)
     print("Number of event packets: {0}".format(bin_data.shape[0]) )
     #tdf = pd.DataFrame(bin_data)
     #tdf.to_csv("_byte_data.csv")
@@ -35,19 +35,19 @@ def load_data(file):
     np.savetxt('_byte_data.csv', bin_data, delimiter=',')   # X is an array
     #return bin_data
     return bin_data
-#load_data("data/S1_1_n")          
+#data = load_data("out.bin")          
 #S1_1_n          
     
 
 
-# In[65]:
+# In[3]:
 
 ##print in hex
 vhex = np.vectorize(hex)
 #vhex(bin_data)
 
 
-# In[66]:
+# In[4]:
 
 #helper function
 def create_word(barr):
@@ -63,17 +63,17 @@ def get_val(h, bitmask, r_shift ):
     return val
 
 
-# In[67]:
+# In[5]:
 
 #w = create_word(bin_data[1,0:3])
 
 
-# In[68]:
+# In[6]:
 
 #vhex(get_val(w,0xFFFFF,0) )
 
 
-# In[69]:
+# In[7]:
 
 def extract_column(data, begin_byte, end_byte,pattern, right_shift):
     warr = map(create_word,data[:,begin_byte:end_byte])
@@ -82,61 +82,61 @@ def extract_column(data, begin_byte, end_byte,pattern, right_shift):
     return r
 
 
-# In[70]:
+# In[8]:
 
 #def exp_code(hdata):
 
 
-# In[71]:
+# In[9]:
 
 def APD1Top(data):
     return extract_column(data,0,3,0xFFFFF,0)
 #vhex(APD1Top(bin_data))
 
 
-# In[72]:
+# In[10]:
 
 def APD2Top(data):
     return extract_column(data,2,5,0xFFFFF0,4)
 #vhex(APD2Top(bin_data))
 
 
-# In[73]:
+# In[11]:
 
 def APD1Bot(data):
     return extract_column(data,5,8,0xFFFFF,0)
 #vhex(APD1Bot(bin_data))
 
 
-# In[74]:
+# In[12]:
 
 def APD2Bot(data):
     return extract_column(data,7,10,0xFFFFF0,4)
 #vhex(APD2Bot(bin_data))
 
 
-# In[75]:
+# In[13]:
 
 def coinc(data):
     return extract_column(data,10,13,0xFFFF,0)
 #vhex(coinc(bin_data))
 
 
-# In[76]:
+# In[14]:
 
 def APD_DAC1(data):
     return extract_column(data,12,15,0xFFF,0)
 #vhex(APD_DAC1(bin_data))
 
 
-# In[77]:
+# In[15]:
 
 def APD_DAC2(data):
     return extract_column(data,12,15,0xFFF000,12)
 #vhex(APD_DAC2(bin_data))
 
 
-# In[78]:
+# In[16]:
 
 def thermistors_x_5(data):
     return data[:,16:21]
@@ -144,70 +144,83 @@ def thermistors_x_5(data):
 #vhex(thermistors_x_5(bin_data) )
 
 
-# In[79]:
+# In[17]:
 
 def Laser_DAC(data):
     return extract_column(data,21,23,0xFFF,0)
 #vhex(Laser_DAC(bin_data))
 
 
-# In[80]:
+# In[18]:
 
 def LCPR_cap_pf(data):
     return extract_column(data,23,25,(0xFFF<<2),2)
 #vhex(LCPR_cap_pf(bin_data))
 
 
-# In[81]:
+# In[19]:
 
 def LCPR_ref_i(data):
     return extract_column(data,23,25,0x3,0)
 ##vhex(LCPR_ref_i(bin_data))
 
 
-# In[82]:
+# In[20]:
 
 def LCPR_1(data):
     return extract_column(data,25,27,0xFFFF,0)
 #vhex(LCPR_1(bin_data))
 
 
-# In[83]:
+# In[21]:
 
 def LCPR_2(data):
     return extract_column(data,27,29,0xFFFF,0)
 #vhex(LCPR_2(bin_data))
 
 
-# In[84]:
+# In[22]:
 
-def LEPD_total(data):
-    return extract_column(data,29,33,(0x3FF<<22),22)
+def LEPD_current(data,index):
+    MSB8 = data[:,29+index].tolist()
+    LSB2 = [ ((x >> (index*2)) & 3) for x in  data[:,29+4] ]
+    
+    return [x*4+y for (x,y) in zip (MSB8,LSB2)]
+        
+    
+
+#vhex(LEPD_current(data,3))
+
+
+# In[23]:
+
+#def LEPD_total(data):
+#    return extract_column(data,29,33,(0x3FF<<22),22)
 #vhex(LEPD_total(bin_data))
 
 
-# In[85]:
+# In[24]:
 
-def LEPD_dX(data):
-    return extract_column(data,29,33,(0x7FF<<11),11)
+#def LEPD_dX(data):
+#    return extract_column(data,29,33,(0x7FF<<11),11)
 #vhex(LEPD_dX(bin_data))
 
 
-# In[86]:
+# In[25]:
 
-def LEPD_dY(data):
-    return extract_column(data,29,33,(0x7FF),0)
+#def LEPD_dY(data):
+#    return extract_column(data,29,33,(0x7FF),0)
 #vhex(LEPD_dY(bin_data))
 
 
-# In[87]:
+# In[26]:
 
 def get_index(data):
-    return extract_column(data,33,35,(0xFFFF),0)
+    return extract_column(data,34,36,(0xFFFF),0)
 #vhex(get_index(bin_data))
 
 
-# In[88]:
+# In[32]:
 
 def process(infile,outfile):
     print("loading:",infile)
@@ -215,8 +228,8 @@ def process(infile,outfile):
     COLUMN_NAMES = ["APDTop1","APDTop2","APDBot1","APDBot2",
                 "Coincidence","APD_DAC1","APD_DAC2","T1",
                 "T2","T3","T4","T5","Laser_DAC","LCPR_cap_pf",
-                "LCPR_ref_i","LCPR_1","LCPR_2","LEPD_total",
-                "LEPD_dX","LEPD_dY","Index"]
+                "LCPR_ref_i","LCPR_1","LCPR_2","LEPDc_0",
+                "LEPDc_1","LEPDc_2","LEPDc_3","Index"]
     df = pd.DataFrame(columns=COLUMN_NAMES)
     
     ind_list = get_index(bin_data)
@@ -224,7 +237,7 @@ def process(infile,outfile):
     heater_end = ind_list[heater_begin:].index(0) + heater_begin
     
     data = bin_data[heater_end:]
-    
+    #data = bin_data
     df["APDTop1"] = APD1Top(data)
     df["APDTop2"] = APD2Top(data)
     df["APDBot1"] = APD1Bot(data)
@@ -243,18 +256,24 @@ def process(infile,outfile):
     df["LCPR_ref_i"] = LCPR_ref_i(data)
     df["LCPR_1"] = LCPR_1(data)
     df["LCPR_2"] = LCPR_2(data)
-    df["LEPD_total"] = LEPD_total(data)
-    df["LEPD_dX"] = LEPD_dX(data)
-    df["LEPD_dY"] = LEPD_dY(data)
+    
+    df["LEPDc_0"] = LEPD_current(data,0)
+    df["LEPDc_1"] = LEPD_current(data,1)
+    df["LEPDc_2"] = LEPD_current(data,2)
+    df["LEPDc_3"] = LEPD_current(data,3)
+    
+    #df["LEPD_total"] = LEPD_total(data)
+    #df["LEPD_dX"] = LEPD_dX(data)
+    #df["LEPD_dY"] = LEPD_dY(data)
     df["Index"] = get_index(data)
-    df = df.drop_duplicates() # 
+    #df = df.drop_duplicates() # 
     df = df[df.Index !=65535  ]
     
     df.to_csv(outfile)
     print("output written to:",outfile)
 
 
-# In[89]:
+# In[33]:
 
 def get_heating_data(infile, outfile): #("data/heater-test/S12_1_n","out_S12.csv")
     bin_data = load_data(infile)
@@ -275,7 +294,7 @@ def get_heating_data(infile, outfile): #("data/heater-test/S12_1_n","out_S12.csv
     
 
 
-# In[113]:
+# In[34]:
 
 def decode_profile_data(p):
     d = {}
@@ -318,7 +337,7 @@ def decode_profile_data(p):
     
 
 
-# In[114]:
+# In[35]:
 
 def get_profile_data(infile,outfile):
     profile_dd = {} #profile data dictionary
@@ -337,14 +356,14 @@ def get_profile_data(infile,outfile):
         json.dump(profile_dd, fp,indent=4, sort_keys=True)
 
     
-get_profile_data("data/S4_1_n","prof_s41.json")
+#get_profile_data("data/S4_1_n","prof_s41.json")
 
 
-# In[115]:
+# In[36]:
 
-process("data/S4_1_n","out_S41.csv")
+process("S1_1_n","out_S1_1.csv")
 #process("out.bin","out_dummy.csv")
-get_heating_data("data/S4_1_n","heat_S41.csv")
+#get_heating_data("data/S4_1_n","heat_S41.csv")
 
 
 # In[ ]:
