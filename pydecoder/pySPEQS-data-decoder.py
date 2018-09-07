@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[93]:
+# In[9]:
 
 #all the import statements are here. 
 import numpy as np
@@ -9,7 +9,7 @@ import pandas as pd
 import json
 
 
-# In[94]:
+# In[10]:
 
 #raw_data = None
 #bin_data = None
@@ -40,14 +40,14 @@ def load_data(file):
     
 
 
-# In[95]:
+# In[11]:
 
 ##print in hex
 vhex = np.vectorize(hex)
 #vhex(bin_data)
 
 
-# In[96]:
+# In[12]:
 
 #helper function
 def create_word(barr):
@@ -63,17 +63,17 @@ def get_val(h, bitmask, r_shift ):
     return val
 
 
-# In[97]:
+# In[13]:
 
 #w = create_word(bin_data[1,0:3])
 
 
-# In[98]:
+# In[14]:
 
 #vhex(get_val(w,0xFFFFF,0) )
 
 
-# In[99]:
+# In[15]:
 
 def extract_column(data, begin_byte, end_byte,pattern, right_shift):
     warr = map(create_word,data[:,begin_byte:end_byte])
@@ -82,61 +82,61 @@ def extract_column(data, begin_byte, end_byte,pattern, right_shift):
     return r
 
 
-# In[100]:
+# In[16]:
 
 #def exp_code(hdata):
 
 
-# In[101]:
+# In[17]:
 
 def APD1Top(data):
     return extract_column(data,0,3,0xFFFFF,0)
 #vhex(APD1Top(bin_data))
 
 
-# In[102]:
+# In[18]:
 
 def APD2Top(data):
     return extract_column(data,2,5,0xFFFFF0,4)
 #vhex(APD2Top(bin_data))
 
 
-# In[103]:
+# In[19]:
 
 def APD1Bot(data):
     return extract_column(data,5,8,0xFFFFF,0)
 #vhex(APD1Bot(bin_data))
 
 
-# In[104]:
+# In[20]:
 
 def APD2Bot(data):
     return extract_column(data,7,10,0xFFFFF0,4)
 #vhex(APD2Bot(bin_data))
 
 
-# In[105]:
+# In[21]:
 
 def coinc(data):
     return extract_column(data,10,13,0xFFFF,0)
 #vhex(coinc(bin_data))
 
 
-# In[106]:
+# In[22]:
 
 def APD_DAC1(data):
     return extract_column(data,12,15,0xFFF,0)
 #vhex(APD_DAC1(bin_data))
 
 
-# In[107]:
+# In[23]:
 
 def APD_DAC2(data):
     return extract_column(data,12,15,0xFFF000,12)
 #vhex(APD_DAC2(bin_data))
 
 
-# In[108]:
+# In[24]:
 
 def thermistors_x_5(data):
     return data[:,16:21]
@@ -144,42 +144,42 @@ def thermistors_x_5(data):
 #vhex(thermistors_x_5(bin_data) )
 
 
-# In[109]:
+# In[25]:
 
 def Laser_DAC(data):
     return extract_column(data,21,23,0xFFF,0)
 #vhex(Laser_DAC(bin_data))
 
 
-# In[110]:
+# In[26]:
 
 def LCPR_cap_pf(data):
     return extract_column(data,23,25,(0xFFF<<2),2)
 #vhex(LCPR_cap_pf(bin_data))
 
 
-# In[111]:
+# In[27]:
 
 def LCPR_ref_i(data):
     return extract_column(data,23,25,0x3,0)
 ##vhex(LCPR_ref_i(bin_data))
 
 
-# In[112]:
+# In[28]:
 
 def LCPR_1(data):
     return extract_column(data,25,27,0xFFFF,0)
 #vhex(LCPR_1(bin_data))
 
 
-# In[113]:
+# In[29]:
 
 def LCPR_2(data):
     return extract_column(data,27,29,0xFFFF,0)
 #vhex(LCPR_2(bin_data))
 
 
-# In[114]:
+# In[30]:
 
 def LEPD_current(data,index):
     MSB8 = data[:,29+index].tolist()
@@ -192,35 +192,35 @@ def LEPD_current(data,index):
 #vhex(LEPD_current(data,3))
 
 
-# In[115]:
+# In[31]:
 
 #def LEPD_total(data):
 #    return extract_column(data,29,33,(0x3FF<<22),22)
 #vhex(LEPD_total(bin_data))
 
 
-# In[116]:
+# In[32]:
 
 #def LEPD_dX(data):
 #    return extract_column(data,29,33,(0x7FF<<11),11)
 #vhex(LEPD_dX(bin_data))
 
 
-# In[117]:
+# In[33]:
 
 #def LEPD_dY(data):
 #    return extract_column(data,29,33,(0x7FF),0)
 #vhex(LEPD_dY(bin_data))
 
 
-# In[118]:
+# In[34]:
 
 def get_index(data):
     return extract_column(data,34,36,(0xFFFF),0)
 #vhex(get_index(bin_data))
 
 
-# In[119]:
+# In[35]:
 
 def process(infile,outfile):
     print("loading:",infile)
@@ -282,7 +282,7 @@ def process(infile,outfile):
     print("output written to:",outfile)
 
 
-# In[120]:
+# In[36]:
 
 def get_heating_data(infile, outfile): #("data/heater-test/S12_1_n","out_S12.csv")
     bin_data = load_data(infile)
@@ -303,7 +303,7 @@ def get_heating_data(infile, outfile): #("data/heater-test/S12_1_n","out_S12.csv
     
 
 
-# In[121]:
+# In[83]:
 
 def decode_profile_data(p):
     d = {}
@@ -311,12 +311,12 @@ def decode_profile_data(p):
     d['obc_exp_code'] = p[1]
     d['e_heat_high'] = p[2]
     
-    d['heatHigh_timeout'] = create_word(p[4:2:-1])
-    d['TEMP_SetPt'] = create_word(p[6:4:-1])
-    d['DarkCountMode_TimeOut'] = create_word(p[8:6:-1])
+    d['heatHigh_timeout'] = create_word(  p[3:5]  )
+    d['TEMP_SetPt'] = create_word(p[5:7])
+    d['DarkCountMode_TimeOut'] = create_word(p[7:9])
     d['LCPR_cap_ref_index'] = p[9]
-    d['LD_Cons_Current_Mode'] = create_word(p[11:9:-1])
-    d['Experiment_Time']  = create_word(p[13:11:-1])
+    d['LD_Cons_Current_Mode'] = create_word(p[19:12])
+    d['Experiment_Time']  = create_word(p[12:14])
     d['QRNG_mode'] = p[14]  # implement check for qrng mdode vs. qrng profile
     
     
@@ -325,8 +325,8 @@ def decode_profile_data(p):
     #d['LCPR_cap_ref_index'] = p[31]  #  repeat? 
     d['LCPR_step_size'] = p[31]
     d['Count_send_interval'] = p[32]
-    d['OPAMP1_DC_Offset'] = create_word(p[34:32:-1])
-    d['OPAMP2_DC_Offset'] = create_word(p[36:34:-1])
+    d['OPAMP1_DC_Offset'] = create_word(p[33:35])
+    d['OPAMP2_DC_Offset'] = create_word(p[35:37])
     d['header_byte'] = p[37]
     d['BTR'] = p[38]
     for key in d :
@@ -337,9 +337,10 @@ def decode_profile_data(p):
     d['LCPR_2_Buf'] = [0,0,0,0]
     
     for i in range(0,4):
-        d['LCPR_1_Buf'][i] = int(create_word(p[(16+2*i):(14+2*i):-1]))
-        d['LCPR_2_Buf'][i] = int(create_word(p[(8+16+2*i):(8+14+2*i):-1]))
-    
+        d['LCPR_1_Buf'][i] = int(create_word(p[(15+2*i):(17+2*i)]))
+        d['LCPR_2_Buf'][i] = int(create_word(p[(8+15+2*i):(8+17+2*i)]))
+        print (int(create_word(list(reversed(p[(8+15+2*i):(8+17+2*i)] )))))
+        print ("test", int(create_word(p[(8+15+2*i):(8+17+2*i)])))
 
     
     return d
@@ -347,7 +348,7 @@ def decode_profile_data(p):
     
 
 
-# In[122]:
+# In[84]:
 
 def get_profile_data(infile,outfile):
     profile_dd = {} #profile data dictionary
@@ -369,26 +370,18 @@ def get_profile_data(infile,outfile):
 get_profile_data("S1_30_n","prof_S1_30.json")
 
 
-# In[123]:
+# In[85]:
 
 process("S1_30_n","out_S1_30.csv")
 #process("out.bin","out_dummy.csv")
 get_heating_data("S1_30_n","heat_S1_30.csv")
 
 
-# In[ ]:
+# In[79]:
 
+a = [ 4,5,6,7,8,9,10]
 
-
-
-# In[ ]:
-
-
-
-
-# In[ ]:
-
-
+list(reversed(a[4:2:-1]))
 
 
 # In[ ]:

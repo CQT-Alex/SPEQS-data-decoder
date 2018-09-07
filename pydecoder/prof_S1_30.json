@@ -2,59 +2,59 @@
     "current_profile": {
         "BTR": 0,
         "Count_send_interval": 11,
-        "DarkCountMode_TimeOut": 7680,
-        "Experiment_Time": 22528,
+        "DarkCountMode_TimeOut": 30,
+        "Experiment_Time": 88,
         "LCPR_1_Buf": [
-            47872,
-            60161,
-            1537,
-            11264
+            187,
+            491,
+            262,
+            44
         ],
         "LCPR_2_Buf": [
-            51456,
-            58881,
-            2817,
-            15109
+            201,
+            486,
+            267,
+            1339
         ],
         "LCPR_cap_ref_index": 1,
         "LCPR_step_size": 24,
-        "LD_Cons_Current_Mode": 11266,
-        "OPAMP1_DC_Offset": 47115,
-        "OPAMP2_DC_Offset": 47104,
+        "LD_Cons_Current_Mode": 0,
+        "OPAMP1_DC_Offset": 3000,
+        "OPAMP2_DC_Offset": 184,
         "QRNG_mode": 0,
-        "TEMP_SetPt": 60928,
+        "TEMP_SetPt": 238,
         "e_heat_high": 0,
         "header_byte": 0,
-        "heatHigh_timeout": 15362,
+        "heatHigh_timeout": 572,
         "obc_exp_code": 1
     },
     "previous_profile": {
         "BTR": 0,
         "Count_send_interval": 10,
-        "DarkCountMode_TimeOut": 7680,
-        "Experiment_Time": 7680,
+        "DarkCountMode_TimeOut": 30,
+        "Experiment_Time": 30,
         "LCPR_1_Buf": [
-            40960,
-            43520,
-            46080,
-            48640
+            160,
+            170,
+            180,
+            190
         ],
         "LCPR_2_Buf": [
-            51200,
-            56320,
-            60160,
-            61445
+            200,
+            220,
+            235,
+            1520
         ],
         "LCPR_cap_ref_index": 1,
         "LCPR_step_size": 24,
-        "LD_Cons_Current_Mode": 11264,
-        "OPAMP1_DC_Offset": 10250,
-        "OPAMP2_DC_Offset": 35840,
+        "LD_Cons_Current_Mode": 0,
+        "OPAMP1_DC_Offset": 2600,
+        "OPAMP2_DC_Offset": 140,
         "QRNG_mode": 0,
-        "TEMP_SetPt": 60928,
+        "TEMP_SetPt": 238,
         "e_heat_high": 0,
         "header_byte": 0,
-        "heatHigh_timeout": 15362,
+        "heatHigh_timeout": 572,
         "obc_exp_code": 1
     }
 }
