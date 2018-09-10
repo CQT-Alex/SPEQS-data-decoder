@@ -1,60 +1,58 @@
 {
     "current_profile": {
-        "BTR": 0,
-        "Count_send_interval": 11,
+        "APD1_offset": 3000,
+        "APD2_offset": 3000,
+        "BTR": 80,
+        "Count_send_interval": 24,
         "DarkCountMode_TimeOut": 30,
-        "Experiment_Time": 88,
+        "Experiment_Time": 100,
         "LCPR_1_Buf": [
             187,
-            491,
+            235,
             262,
-            44
+            300
         ],
         "LCPR_2_Buf": [
             201,
-            486,
+            230,
             267,
-            1339
+            315
         ],
-        "LCPR_cap_ref_index": 1,
-        "LCPR_step_size": 24,
-        "LD_Cons_Current_Mode": 0,
-        "OPAMP1_DC_Offset": 3000,
-        "OPAMP2_DC_Offset": 184,
+        "LCPR_cap_ref_index": 0,
+        "LCPR_step_size": 5,
+        "LD_Cons_Current_Mode": 300,
         "QRNG_mode": 0,
-        "TEMP_SetPt": 238,
-        "e_heat_high": 0,
-        "header_byte": 0,
-        "heatHigh_timeout": 572,
-        "obc_exp_code": 1
+        "TEMP_SetPt": 750,
+        "e_heat_high": 1,
+        "heatHigh_timeout": 10,
+        "obc_exp_code": 134
     },
     "previous_profile": {
-        "BTR": 0,
-        "Count_send_interval": 10,
-        "DarkCountMode_TimeOut": 30,
-        "Experiment_Time": 30,
+        "APD1_offset": 3000,
+        "APD2_offset": 3000,
+        "BTR": 80,
+        "Count_send_interval": 24,
+        "DarkCountMode_TimeOut": 60,
+        "Experiment_Time": 610,
         "LCPR_1_Buf": [
-            160,
-            170,
-            180,
-            190
+            187,
+            235,
+            262,
+            300
         ],
         "LCPR_2_Buf": [
-            200,
-            220,
-            235,
-            1520
+            201,
+            230,
+            267,
+            315
         ],
-        "LCPR_cap_ref_index": 1,
-        "LCPR_step_size": 24,
-        "LD_Cons_Current_Mode": 0,
-        "OPAMP1_DC_Offset": 2600,
-        "OPAMP2_DC_Offset": 140,
+        "LCPR_cap_ref_index": 0,
+        "LCPR_step_size": 5,
+        "LD_Cons_Current_Mode": 311,
         "QRNG_mode": 0,
-        "TEMP_SetPt": 238,
-        "e_heat_high": 0,
-        "header_byte": 0,
-        "heatHigh_timeout": 572,
-        "obc_exp_code": 1
+        "TEMP_SetPt": 800,
+        "e_heat_high": 1,
+        "heatHigh_timeout": 1,
+        "obc_exp_code": 16
     }
 }
