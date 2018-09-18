@@ -13,13 +13,14 @@ python3 decode-SPEQS.py [-h] -inp INPUT_FILE_NAME [-a] [-s] [-t] [-p]
 ```
 -h, --help            show this help message and exit
 -inp INPUT_FILE_NAME, --input_file_name INPUT_FILE_NAME
-                        Input file name
+
 -a                    Extract all types of data
 -s                    Extract experiment data
 -t                    Extract thermistor data
 -p                    Extract profile data
 ```
-
+`-inp` is compulsory 
+other arguments flags can be provided in any combination or order  
 
 ## Dependencies
 
