@@ -7,7 +7,7 @@
 import numpy as np
 import pandas as pd
 import json
-
+import argparse
 
 # In[139]:
 
@@ -255,11 +255,11 @@ def process(infile,outfile):
     df["APD_DAC1"] = APD_DAC1(data)
     df["APD_DAC2"] = APD_DAC2(data)
     T = thermistors_x_5(data)
-    df["T1"] = T[:,0].astype(int) *4
-    df["T2"] = T[:,1].astype(int) *4
-    df["T3"] = T[:,2].astype(int) *4
-    df["T4"] = T[:,3].astype(int) *4
-    df["T5"] = T[:,4].astype(int) *4
+    df["T1"] = T[:,0].astype(int) *8
+    df["T2"] = T[:,1].astype(int) *8
+    df["T3"] = T[:,2].astype(int) *8
+    df["T4"] = T[:,3].astype(int) *8
+    df["T5"] = T[:,4].astype(int) *8
     df["Laser_DAC"] = Laser_DAC(data)
     df["LCPR_cap_pf"] = LCPR_cap_pf(data)
     df["LCPR_ref_i"] = LCPR_ref_i(data)
@@ -376,21 +376,47 @@ def get_profile_data(infile,outfile):
         json.dump(profile_dd, fp,indent=4, sort_keys=True)
 
     
-get_profile_data("S1_30_n","prof_S1_30.json")
+ifile = ""
+ipath = "" # puth the default path name here
+opath = "" # puth the default output pathname here 
+
+if __name__ == "__main__":
+
+    ''' The command line input parser '''
+    parser = argparse.ArgumentParser(description='Processes the commandline arguments of the SPEQS data decoder.')
+    parser.add_argument('-inp','--input_file_name',help='Input file name',required=True)
+    parser.add_argument('-a', action='store_true', help="Extract all types of data")
+    parser.add_argument('-s', action='store_true', help="Extract experiment data")
+    parser.add_argument('-t', action='store_true', help="Extract thermistor data")
+    parser.add_argument('-p', action='store_true', help="Extract profile data")
+    args = parser.parse_args()
+    
+    ifile = args.input_file_name
+    input_file_pathname = ipath + ifile
+    if opath == "": 
+        opath = ipath
+
+    output_file_pathname = opath + ifile
+    do_all = False;
+    
+    if args.a or not (args.a or args.s or args.t or args.p):
+        do_all = True
+
+    if do_all or args.p:
+        get_profile_data(input_file_pathname,output_file_pathname + "_p.json")
+    if do_all or args.s:
+        process(input_file_pathname,output_file_pathname + "_o.csv")
+    if do_all or args.t:
+        get_heating_data(input_file_pathname,output_file_pathname + "_t.csv")
+    
+    
+    # In[189]:
+
+    #process("S1_30_n","out_S1_30.csv")
+    #process("out.bin","out_dummy.csv")
+    #get_heating_data("S1_30_n","heat_S1_30.csv")
 
 
-# In[189]:
-
-process("S1_30_n","out_S1_30.csv")
-#process("out.bin","out_dummy.csv")
-get_heating_data("S1_30_n","heat_S1_30.csv")
-
-
-# In[170]:
-
-a = [ 4,5,6,7,8,9,10]
-
-list(reversed(a[4:2:-1]))
 
 
 # In[ ]:

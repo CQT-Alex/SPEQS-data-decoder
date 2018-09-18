@@ -1,22 +1,22 @@
 {
     "current_profile": {
-        "APD1_offset": 3000,
-        "APD2_offset": 3000,
-        "BTR": 80,
+        "APD1_offset": 2600,
+        "APD2_offset": 2700,
+        "BTR": 0,
         "Count_send_interval": 24,
         "DarkCountMode_TimeOut": 30,
-        "Experiment_Time": 100,
+        "Experiment_Time": 30,
         "LCPR_1_Buf": [
-            187,
-            235,
-            262,
-            300
+            160,
+            170,
+            180,
+            190
         ],
         "LCPR_2_Buf": [
-            201,
-            230,
-            267,
-            315
+            200,
+            220,
+            235,
+            240
         ],
         "LCPR_cap_ref_index": 0,
         "LCPR_step_size": 5,
@@ -24,16 +24,16 @@
         "QRNG_mode": 0,
         "TEMP_SetPt": 750,
         "e_heat_high": 1,
-        "heatHigh_timeout": 10,
+        "heatHigh_timeout": 60,
         "obc_exp_code": 134
     },
     "previous_profile": {
         "APD1_offset": 3000,
         "APD2_offset": 3000,
         "BTR": 80,
-        "Count_send_interval": 24,
-        "DarkCountMode_TimeOut": 60,
-        "Experiment_Time": 610,
+        "Count_send_interval": 20,
+        "DarkCountMode_TimeOut": 1,
+        "Experiment_Time": 10,
         "LCPR_1_Buf": [
             187,
             235,
@@ -53,6 +53,6 @@
         "TEMP_SetPt": 800,
         "e_heat_high": 1,
         "heatHigh_timeout": 1,
-        "obc_exp_code": 16
+        "obc_exp_code": 1
     }
 }
