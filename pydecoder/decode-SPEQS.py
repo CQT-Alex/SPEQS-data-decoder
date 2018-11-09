@@ -303,6 +303,7 @@ def get_heating_data(infile, outfile): #("data/heater-test/S12_1_n","out_S12.csv
     
     
     np.savetxt(outfile, hdata, delimiter=",")
+    print("output written to:",outfile)
     #print (heater_begin,heater_end)
     #print( ind_list [heater_end])
     #print (ind_list)
@@ -381,7 +382,9 @@ def get_profile_data(infile,outfile):
     with open(outfile,"w") as fp:
         json.dump(profile_dd, fp,indent=4, sort_keys=True)
 
-    
+    print("output written to:",outfile)
+
+
 ifile = ""
 ipath = "" # puth the default path name here
 opath = "" # puth the default output pathname here 
