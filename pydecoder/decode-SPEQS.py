@@ -284,6 +284,7 @@ def process(infile,outfile):
 
 # In[165]:
 
+"heatin data updated"
 def get_heating_data(infile, outfile): #("data/heater-test/S12_1_n","out_S12.csv")
     bin_data = load_data(infile)
     #df = pd.DataFrame(columns=COLUMN_NAMES)
@@ -294,9 +295,14 @@ def get_heating_data(infile, outfile): #("data/heater-test/S12_1_n","out_S12.csv
     
     hdata = data[heater_begin:heater_end].astype(dtype='uint16') *4
     
-    np.savetxt(outfile, hdata, delimiter=",")
-    #print(hdata)
+    hdata = hdata.flatten()
+    hdata = hdata.reshape(int(hdata.shape[0]/252),252)
+    hdata = hdata[:,:-7]
+    hdata = hdata.flatten()
+    hdata = hdata.reshape(int(hdata.shape[0]/5),5)
     
+    
+    np.savetxt(outfile, hdata, delimiter=",")
     #print (heater_begin,heater_end)
     #print( ind_list [heater_end])
     #print (ind_list)
