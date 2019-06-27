@@ -255,11 +255,11 @@ def process(infile,outfile):
     df["APD_DAC1"] = APD_DAC1(data)
     df["APD_DAC2"] = APD_DAC2(data)
     T = thermistors_x_5(data)
-    df["T1"] = T[:,0].astype(int) *8
-    df["T2"] = T[:,1].astype(int) *8
-    df["T3"] = T[:,2].astype(int) *8
-    df["T4"] = T[:,3].astype(int) *8
-    df["T5"] = T[:,4].astype(int) *8
+    df["T1"] = T[:,0].astype(int) *4
+    df["T2"] = T[:,1].astype(int) *4
+    df["T3"] = T[:,2].astype(int) *4
+    df["T4"] = T[:,3].astype(int) *4
+    df["T5"] = T[:,4].astype(int) *4
     df["Laser_DAC"] = Laser_DAC(data)
     df["LCPR_cap_pf"] = LCPR_cap_pf(data)
     df["LCPR_ref_i"] = LCPR_ref_i(data)
@@ -284,7 +284,6 @@ def process(infile,outfile):
 
 # In[165]:
 
-"heatin data updated"
 def get_heating_data(infile, outfile): #("data/heater-test/S12_1_n","out_S12.csv")
     bin_data = load_data(infile)
     #df = pd.DataFrame(columns=COLUMN_NAMES)
@@ -295,15 +294,19 @@ def get_heating_data(infile, outfile): #("data/heater-test/S12_1_n","out_S12.csv
     
     hdata = data[heater_begin:heater_end].astype(dtype='uint16') *4
     
-    hdata = hdata.flatten()
-    hdata = hdata.reshape(int(hdata.shape[0]/252),252)
-    hdata = hdata[:,:-7]
-    hdata = hdata.flatten()
-    hdata = hdata.reshape(int(hdata.shape[0]/5),5)
+    fhd = hdata.flatten()
     
+    condition = (fhd != 1020)
+    print(condition[243:255])
+    ghd = np.extract(condition, fhd)
+    print (ghd.shape )
+
+    reshaped_heating_data = np.reshape(ghd,(-1,5))
+
+    print(reshaped_heating_data.shape)
+    np.savetxt(outfile, reshaped_heating_data, delimiter=",")
+    #print(hdata)
     
-    np.savetxt(outfile, hdata, delimiter=",")
-    print("output written to:",outfile)
     #print (heater_begin,heater_end)
     #print( ind_list [heater_end])
     #print (ind_list)
@@ -382,12 +385,11 @@ def get_profile_data(infile,outfile):
     with open(outfile,"w") as fp:
         json.dump(profile_dd, fp,indent=4, sort_keys=True)
 
-    print("output written to:",outfile)
-
-
+    
 ifile = ""
-ipath = "" # puth the default path name here
-opath = "" # puth the default output pathname here 
+#ipath = "/home/cqt/git/CSP-Codebase-v2.9.1/" # puth the default path name here
+ipath = "./" # puth the default path name here
+opath = "./" # puth the default output pathname here 
 
 if __name__ == "__main__":
 
