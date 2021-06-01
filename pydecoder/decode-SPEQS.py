@@ -290,8 +290,12 @@ def get_heating_data(infile, outfile): #("data/heater-test/S12_1_n","out_S12.csv
     data = bin_data
     ind_list = get_index(data)
     heater_begin = 14
-    heater_end = ind_list[heater_begin:].index(0) + heater_begin
     
+    if 0 in ind_list:
+        heater_end = ind_list[heater_begin:].index(0) + heater_begin
+    else:
+        heater_end = int ((len(ind_list[heater_begin:])-14)/2)+heater_begin
+
     hdata = data[heater_begin:heater_end].astype(dtype='uint16') *4
     
     fhd = hdata.flatten()
